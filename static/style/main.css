@@ -1,0 +1,198 @@
+.clearfix {
+    clear: both;
+}
+.view {
+    display: none;
+}
+
+.gameListRow {
+    display: block;
+    margin-bottom: 10px;
+}
+.gameListName {
+    max-width: 150px;
+    width: 100%;
+    display: inline-block;
+}
+.gameListPlayers {
+    max-width: 50px;
+    width: 100%;
+    display: inline-block;
+}
+.gameListJoin {
+    max-width: 200px;
+    width: 100%;
+    display: inline-block;
+}
+.gameDeck {
+    float: left;
+    margin-top: 47px;
+    margin-bottom: 47px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.gameField {
+    height: 200px;
+    float: left;
+}
+.gameHand {
+    
+}
+
+.card {
+    background-image: url("../images/card-sheet-default.png");
+    background-repeat: no-repeat;
+    width: 60px;
+    height: 94px;
+    display: inline-block;
+}
+.card-back {
+    background-position: 0 -564px;
+}
+.card-border {
+    background-position: -60px -564px;
+}
+.card-0 {
+    background-position: 0 0;
+}
+.card-1 {
+    background-position: -60px 0;
+}
+.card-2 {
+    background-position: -120px 0;
+}
+.card-3 {
+    background-position: -180px 0;
+}
+.card-4 {
+    background-position: -240px 0;
+}
+.card-5 {
+    background-position: -300px 0;
+}
+.card-6 {
+    background-position: -360px 0;
+}
+.card-7 {
+    background-position: -420px 0;
+}
+.card-8 {
+    background-position: 0 -94px;
+}
+.card-9 {
+    background-position: -60px -94px;
+}
+.card-10 {
+    background-position: -120px -94px;
+}
+.card-11 {
+    background-position: -180px -94px;
+}
+.card-12 {
+    background-position: -240px -94px;
+}
+.card-13 {
+    background-position: -300px -94px;
+}
+.card-14 {
+    background-position: -360px -94px;
+}
+.card-15 {
+    background-position: -420px -94px;
+}
+.card-16 {
+    background-position: 0 -188px;
+}
+.card-17 {
+    background-position: -60px -188px;
+}
+.card-18 {
+    background-position: -120px -188px;
+}
+.card-19 {
+    background-position: -180px -188px;
+}
+.card-20 {
+    background-position: -240px -188px;
+}
+.card-21 {
+    background-position: -300px -188px;
+}
+.card-22 {
+    background-position: -360px -188px;
+}
+.card-23 {
+    background-position: -420px -188px;
+}
+.card-24 {
+    background-position: 0 -282px;
+}
+.card-25 {
+    background-position: -60px -282px;
+}
+.card-26 {
+    background-position: -120px -282px;
+}
+.card-27 {
+    background-position: -180px -282px;
+}
+.card-28 {
+    background-position: -240px -282px;
+}
+.card-29 {
+    background-position: -300px -282px;
+}
+.card-30 {
+    background-position: -360px -282px;
+}
+.card-31 {
+    background-position: -420px -282px;
+}
+.card-32 {
+    background-position: 0 -376px;
+}
+.card-33 {
+    background-position: -60px -376px;
+}
+.card-34 {
+    background-position: -120px -376px;
+}
+.card-35 {
+    background-position: -180px -376px;
+}
+.card-36 {
+    background-position: -240px -376px;
+}
+.card-37 {
+    background-position: -300px -376px;
+}
+.card-38 {
+    background-position: -360px -376px;
+}
+.card-39 {
+    background-position: -420px -376px;
+}
+.card-40 {
+    background-position: 0 -470px;
+}
+.card-41 {
+    background-position: -60px -470px;
+}
+.card-42 {
+    background-position: -120px -470px;
+}
+.card-43 {
+    background-position: -180px -470px;
+}
+.card-44 {
+    background-position: -240px -470px;
+}
+.card-45 {
+    background-position: -300px -470px;
+}
+.card-46 {
+    background-position: -360px -470px;
+}
+.card-47 {
+    background-position: -420px -470px;
+}

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="/static/style/main.css" />
+        <title>Koi Koi</title>
+    </head>
+    <body>
+        <script>
+
+            var _gameState = null;
+            var _playerState = null;
+
+            var _lobby = null;
+            var _newGameName = null;
+            var _newGameForm = null;
+            var _gameList = null;
+            
+            var _game = null;
+            var _leaveGame = null;
+            var _hand = null;
+            var _deck = null;
+            var _field = null;
+
+            function makeCard(id) {
+                var card = document.createElement('div');
+                card.classList.add('card', 'card-' + id);
+                return card;
+            }
+
+            function initLobby() {
+                var games = [];
+
+                _game.style.display = 'none';
+                _lobby.style.display = 'block';
+
+                document.addEventListener('GameListChanged', function(e) {
+                    games = e.detail.games;
+                    while (_gameList.firstChild) {
+                        _gameList.removeChild(_gameList.firstChild)
+                    }
+                    games.forEach(function(game) {
+                        var row = document.createElement('div');
+                        row.classList.add('gameListRow');
+
+                        var name = document.createElement('div');
+                        name.classList.add('gameListName');
+                        name.textContent = game.name;
+                        row.appendChild(name);
+
+                        var players = document.createElement('div');
+                        players.classList.add('gameListPlayers');
+                        players.textContent = game.players + '/' + game.capacity;
+                        row.appendChild(players);
+
+                        if (game.players < game.capacity) {
+                            var join = document.createElement('div');
+                            join.classList.add('gameListJoin');
+
+                            var joinButton = document.createElement('button');
+                            joinButton.textContent = 'Join Game';
+                            joinButton.addEventListener('click', function(e) {
+                                e.preventDefault()
+                                window.socket.send(JSON.stringify({
+                                    type: 'JoinGame',
+                                    name: game.name,
+                                }))
+                            });
+
+                            join.appendChild(joinButton);
+                            row.appendChild(join);
+                        }
+
+                        _gameList.appendChild(row);
+                    })
+                });
+
+                _newGameForm.addEventListener('submit', function(e) {
+                    e.preventDefault()
+                    window.socket.send(JSON.stringify({
+                        type: 'NewGame',
+                        name: _newGameName.value,
+                    }))
+                    return false;
+                });
+            }
+
+            function initGame() {
+                var field = [];
+                var hand = [];
+
+                _leaveGame.addEventListener('click', function(e) {
+                    window.socket.send(JSON.stringify({
+                        type: 'LeaveGame',
+                    }))
+                })
+
+                document.addEventListener('GameStateChange', function(e) {
+                    _gameState.innerText = e.detail.state;
+                });
+
+                document.addEventListener('FieldChanged', function(e) {
+                    field = e.detail.field;
+                    while (_field.firstChild) {
+                        _field.removeChild(_field.firstChild)
+                    }
+                    field.forEach(function(card) {
+                        _field.appendChild(makeCard(card.id));
+                    });
+                    _field.style.maxWidth = (Math.ceil(field.length/2) * 60) + "px";
+                });
+
+                document.addEventListener('HandChanged', function(e) {
+                    hand = e.detail.hand;
+                    while (_hand.firstChild) {
+                        _hand.removeChild(_hand.firstChild)
+                    }
+                    hand.forEach(function(card) {
+                        _hand.appendChild(makeCard(card.id));
+                    });
+                });
+
+                _lobby.style.display = 'none';
+                _game.style.display = 'block';
+            }
+
+            function connect() {
+                window.socket = new WebSocket('ws://{{ .Host }}/ws');
+
+                window.socket.onopen = function() {
+                };
+
+                window.socket.onclose = function(event) {
+                    window.socket = null;
+                    setTimeout(connect, 5000);
+                };
+
+                window.socket.onerror = function(error) {
+                };
+
+                window.socket.onmessage = function(message) {
+                    packet = JSON.parse(message.data);
+                    console.log(packet);
+                    document.dispatchEvent(new CustomEvent(
+                        packet.type, { detail: packet },
+                    ))
+                }
+
+                return socket;
+            }
+
+            window.onload = function() {
+                _playerState = document.getElementById('playerState');
+                _gameState = document.getElementById('gameState');
+
+                _lobby = document.getElementById('lobby');
+                _newGameName = document.getElementById('lobby-newGameName');
+                _newGameForm = document.getElementById('lobby-newGameForm');
+                _gameList = document.getElementById('lobby-gameList');
+
+                _game = document.getElementById('game');
+                _leaveGame = document.getElementById('game-leave');
+                _state = document.getElementById('game-state');
+                _hand = document.getElementById('game-hand');
+                _deck = document.getElementById('game-deck');
+                _field = document.getElementById('game-field');
+
+                document.addEventListener('PlayerStateChange', function(e) {
+                    _playerState.innerText = e.detail.state;
+                    switch (e.detail.state) {
+                    case 'InLobby':
+                        initLobby();
+                        break;
+                    case 'InGame':
+                        initGame();
+                        break;
+                    }
+                });
+                
+                document.addEventListener('Error', function(e) {
+                    alert("Error: " + e.detail.message);
+                });
+
+                document.addEventListener('Message', function(e) {
+                    alert(e.detail.message);
+                });
+
+                connect();
+            }
+
+        </script>
+        <div>Player State: <span id="playerState"></span></div>
+        <div>Game State: <span id="gameState"></span></div>
+        <br />
+        <div class="view" id="lobby">
+            <form id="lobby-newGameForm">
+                <input id="lobby-newGameName" width="20" />
+                <input type="submit" value="New Game" />
+            </form>
+            <h2>Games</h2>
+            <div id="lobby-gameList"></div>
+        </div>
+        <div class="view" id="game">
+            <button id="game-leave">Leave Game</button>
+            <br />
+            <br />
+            <div id="game-deck" class="gameDeck card card-back"></div>
+            <div id="game-field" class="gameField"></div>
+            <div class="clearfix"></div>
+            <div id="game-hand" class="gameHand"></div>
+        </div>
+    </body>
+</html>
