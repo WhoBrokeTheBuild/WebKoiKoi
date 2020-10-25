@@ -127,7 +127,7 @@
             }
 
             function connect() {
-                window.socket = new WebSocket('ws://{{ .Host }}/ws');
+                window.socket = new WebSocket('ws://' + window.location.host);
 
                 window.socket.onopen = function() {
                 };
