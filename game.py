@@ -44,6 +44,7 @@ class Game:
 
         async with self.lock:
             for p in self.players:
+                await p.send_message('Game has ended')
                 await p.change_state(PlayerState.IN_LOBBY)
                 await p.send_game_list()
 
@@ -83,8 +84,8 @@ class Game:
     async def remove_player(self, player):
         async with self.lock:
             self.players.remove(player)
-        
 
+        await self.remove()
 
     async def start(self):
         from .player import Player
@@ -99,6 +100,8 @@ class Game:
 
         async with self.lock:
             for p in Player.all_players:
+                p.hand = self.deck[-8:]
+                self.deck = self.deck[:-8]
                 await p.send_hand_changed()
     
     async def send_field_changed(self):
@@ -107,8 +110,8 @@ class Game:
             for card in self.field:
                 field.append(card.toDict())
 
-                for p in self.players:
-                    await p.socket.send(json.dumps({
-                        'type': 'FieldChanged',
-                        'field': field,
-                    }))
+            for p in self.players:
+                await p.socket.send(json.dumps({
+                    'type': 'FieldChanged',
+                    'field': field,
+                }))

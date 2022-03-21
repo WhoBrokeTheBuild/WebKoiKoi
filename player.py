@@ -67,7 +67,11 @@ class Player:
                 await self.join_game(data)
 
     async def handle_packet_game(self, data):
-        pass
+        if 'type' in data:
+            if data['type'] == 'LeaveGame':
+                await self.game.remove_player(self)
+                await self.change_state(PlayerState.IN_LOBBY)
+                await self.send_game_list()
 
     async def create_game(self, data):
         if 'name' not in data:
@@ -85,6 +89,10 @@ class Player:
 
         game = await Game.new(name)
         await game.add_player(self)
+
+        async with Player.all_players_lock:
+            for p in Player.all_players:
+                await p.send_game_list()
     
     async def join_game(self, data):
         if 'name' not in data:

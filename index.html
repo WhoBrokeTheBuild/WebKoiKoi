@@ -10,6 +10,7 @@
     <body>
         <script>
 
+            var _socketState = null;
             var _gameState = null;
             var _playerState = null;
 
@@ -130,9 +131,12 @@
                 window.socket = new WebSocket('ws://' + window.location.host);
 
                 window.socket.onopen = function() {
+                    _socketState.textContent = "Connected";
                 };
 
                 window.socket.onclose = function(event) {
+                    _socketState.textContent = "Disconnected";
+                    
                     window.socket = null;
                     setTimeout(connect, 5000);
                 };
@@ -152,6 +156,7 @@
             }
 
             window.onload = function() {
+                _socketState = document.getElementById('socketState');
                 _playerState = document.getElementById('playerState');
                 _gameState = document.getElementById('gameState');
 
@@ -191,6 +196,7 @@
             }
 
         </script>
+        <div>Socket State: <span id="socketState"></span></div>
         <div>Player State: <span id="playerState"></span></div>
         <div>Game State: <span id="gameState"></span></div>
         <br />
